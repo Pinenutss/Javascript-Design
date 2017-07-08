@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>用代理实现单例模式</title>
+</head>
+
+<body>
+    <script>
+        var Person = function(name, ege) { //111111111111111111111111
+            this.name = name; //构造函数式继承
+            this.ege = ege;
+        }
+        Person.prototype.alertName = function() { //原型方法
+            alert(this.name);
+        }
+        Person.prototype.alertEge = function() {
+            alert(this.ege);
+        }
+
+        var father = new Person('dave', 50);
+        console.log(father.alertName);
+        console.log(father);
+
+        var Person2 = function(name, ege, love) { //222222222222222222222
+            Person.call(this, name, ege);
+            this.love = love;
+        }
+        Person2.prototype = new Person();
+        Person2.prototype.constructor = Person2;
+        Person2.prototype.alertName = function() {
+            alert(this.love);
+        }
+        var son = new Person2('ssss', '20', 'beuiltyful');
+        console.log(son);
+
+        var Person3 = function(name, ege, love, hate) { //3333333333333333333
+            Person2.call(this, name, ege, love, hate);
+            this.hate = hate;
+        }
+        Person3.prototype = new Person2();
+        // Person3.prototype.constructor = Person3;
+        var grandson = new Person3('gggg', '10', 'girl', 'fuck');
+        console.log(grandson);
+        console.log(grandson.name);
+        console.log(grandson.love);
+
+        console.log(grandson.name === son.name);
+        console.log(grandson.alertEge === son.alertEge);
+        console.log(grandson.alertName === son.alertName);
+        console.log(grandson.alertName === father.alertName); //alertName 在person2被修改了
+    </script>
+</body>
+
+</html>

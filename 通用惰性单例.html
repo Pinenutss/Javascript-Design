@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>通用惰性单例</title>
+    <style>
+    .login-layer{display: none;}
+    </style>
+</head>
+
+<body>
+
+    <button id="loginBtn">点击登录</button><button id="close_login">关闭登录</button>
+    <button id="iframeBtn">创建iframe</button><button id="close_iframe">关闭登录</button>
+
+    <script>
+        //原理：用一个对象来标记是否创建过对象，如果是，则再下次直接返回这个已经创建好的对象
+        // var obj;
+        // if (!obj) {
+        //   obj = xxx;
+        // }
+
+        var getSingle = function(fn){
+          var result;
+          return function(){
+            return result || (result = fn.call(this,arguments));
+          }
+        };
+
+        var createLoginLayer = function(){// 创建登录框
+          var div = document.createElement('div');
+          div.className = 'login-layer'
+          div.innerHTML = "我是登录窗口";
+          //alert(1);
+          document.body.appendChild(div);
+          return div;
+        };
+        var createSingleLoginLayer = getSingle(createLoginLayer);//单例登录框
+        document.getElementById('loginBtn').onclick = function(){
+          var loginLayer = createSingleLoginLayer();//创建单例登录框
+          loginLayer.style.display = 'block';
+        };
+
+
+        var createIframe = function(){//创建iframe
+          var iframe = document.createElement('iframe');
+          iframe.src = 'https://www.baidu.com';
+          document.body.appendChild(iframe);
+          return iframe;
+        }
+        var createSingleIframe = getSingle(createIframe);//单例iframe
+        document.getElementById('iframeBtn').onclick = function(){
+          var iframe = createSingleIframe();//创建单例iframe
+          iframe.style.width = '400px';
+          iframe.style.height = '400px';
+        }
+
+        document.getElementById('close_login').onclick = function(){ //关闭login
+          var loginLayer = document.getElementsByClassName('login-layer')[0];
+          console.log(loginLayer);
+          loginLayer.style.display = 'none';
+        }
+        document.getElementById('close_iframe').onclick = function(){//关闭iframe
+          var iframe = createSingleIframe();
+          iframe.style.display = 'none';
+        }
+
+
+
+
+
+    </script>
+</body>
+
+</html>
